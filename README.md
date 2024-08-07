@@ -2,7 +2,6 @@
   <h1 align="center">EVVA Abrevva Android SDK</h1>
 </p>
 
-<!-- TODO: update links -->
 <p align="center">
   <a><img src="https://img.shields.io/github/v/tag/evva-sfw/abrevva-sdk-android?color=fce500" alt="Package managers"></a>
   <a href="#quick-start"><img src="https://img.shields.io/badge/package-Gradle-fce500?logo=Gradle&logoColor=209BC4" alt="Package managers"></a>
@@ -25,10 +24,10 @@ The EVVA Abrevva Android SDK is a collection of tools to work with electronical 
 
 ## Requirements
 
-| Platform                    |  Installation            | Status                  |
-|-----------------------------|-------------------------| ------------------------ |
-| iOS                         |see [EVVA Abrevva IOS SDK](https://github.com/evva-sfw/abrevva-sdk-ios-pod-specs) | -
-| Android 10+ (API level 29)  | [Gradle](#Gradle)       | Fully Tested             |
+| Platform                   | Installation                                                                      | Status       |
+| -------------------------- | --------------------------------------------------------------------------------- | ------------ |
+| iOS                        | see [EVVA Abrevva IOS SDK](https://github.com/evva-sfw/abrevva-sdk-ios-pod-specs) | -            |
+| Android 10+ (API level 29) | [Gradle](#Gradle)                                                                 | Fully Tested |
 
 ## Installation
 
@@ -37,15 +36,9 @@ The EVVA Abrevva Android SDK is a collection of tools to work with electronical 
 [Gradle](https://gradle.org/) is a build automation tool for multi-language software development. For usage and installation instructions, visit their website. To integrate EVVA Abrevva Android SDK into your Android Studio project using Gradle, specify the dependency in your `build.gradle` File:
 
 ```gradle
-    repositories {
-        maven {
-            url = uri("https://maven.pkg.github.com/evva-sfw/abrevva-sdk-android")
-        }
-    }
-    ...
-    dependencies {
-      implementation group: "com.evva.xesar", name: "abrevva-sdk-android", version: "1.0.18"
-    }
+dependencies {
+  implementation group: "com.evva.xesar", name: "abrevva-sdk-android", version: "1.0.18"
+}
 ```
 
 ## Examples
@@ -55,17 +48,17 @@ The EVVA Abrevva Android SDK is a collection of tools to work with electronical 
 To start off first initialize the SDK BleManager. You can pass an init callback closure for success indication.
 
 ```kotlin
-    import com.evva.xesar.abrevva.ble.BleManager
-    import android.util.Log
+import com.evva.xesar.abrevva.ble.BleManager
+import android.util.Log
 
-    public class Example {
-        private lateinit var bleManager: BleManager
-        private var bleDeviceMap: MutableMap<String, BleDevice> = mutableMapOf()
+public class Example {
+  private lateinit var bleManager: BleManager
+  private var bleDeviceMap: MutableMap<String, BleDevice> = mutableMapOf()
 
-        fun initialize() {
-            this.bleManager = BleManager(context)
-        }
-    }
+  fun initialize() {
+    this.bleManager = BleManager(context)
+  }
+}
 ```
 
 ### Scan for EVVA components
@@ -73,27 +66,27 @@ To start off first initialize the SDK BleManager. You can pass an init callback 
 Use the BleManager to scan for components in range. You can pass several callback closures to react to the different events when scanning or connecting to components.
 
 ```kotlin
-  fun requestLeScan() {
-    val timeout: Long = 10_000
+fun requestLeScan() {
+  val timeout: Long = 10_000
 
-    this.bleManager.startScan(
-      { success ->
-        Log.d("BleManager", "Scan started /w success=${success}")
-      },
-      { device ->
-        Log.d("BleManager", "Found device /w address=${device.device.address}")
-        this.bleDeviceMap[device.device.address] = device
-      },
-      { address ->
-        Log.d("BleManager", "Connected to device /w address=${address}")
+  this.bleManager.startScan(
+    { success ->
+      Log.d("BleManager", "Scan started /w success=${success}")
+    },
+    { device ->
+      Log.d("BleManager", "Found device /w address=${device.device.address}")
+      this.bleDeviceMap[device.device.address] = device
+    },
+    { address ->
+      Log.d("BleManager", "Connected to device /w address=${address}")
 
-      },
-      { address ->
-        Log.d("BleManager", "Disconnected from device /w address=${address}")
-      },
-      timeout
-    )
-  }
+    },
+    { address ->
+      Log.d("BleManager", "Disconnected from device /w address=${address}")
+    },
+    timeout
+  )
+}
 ```
 
 ### Localize EVVA component
@@ -111,53 +104,56 @@ suspend fun signalize(deviceID: String) {
   }
 }
 ```
+
 ### Perform disengage for EVVA components
 
 For the component disengage you have to provide access credentials to the EVVA component. Those are generally acquired in the form of access media metadata from the Xesar software.
 
 ```kotlin
 suspend fun disengage(deviceID: String) {
-    val device: BleDevice? = bleDeviceMap[deviceID]
-    if (device == null) {
-        return
-    }
-    val mobileID = ""           // hex string
-    val mobileDeviceKey = ""    // hex string
-    val mobileGroupID = ""      // hex string
-    val mobileAccessData = ""   // hex string
-    val isPermanentRelease = false
-    
-    bleManager.disengage(
-        deviceID,
-        mobileID,
-        mobileDeviceKey,
-        mobileGroupID,
-        mobileAccessData,
-        isPermanentRelease,
-    ) {
-        println("Disengage /w status=$it")
-    }
+  val device: BleDevice? = bleDeviceMap[deviceID]
+  if (device == null) {
+    return
+  }
+  val mobileID = ""           // hex string
+  val mobileDeviceKey = ""    // hex string
+  val mobileGroupID = ""      // hex string
+  val mobileAccessData = ""   // hex string
+  val isPermanentRelease = false
+
+  bleManager.disengage(
+    deviceID,
+    mobileID,
+    mobileDeviceKey,
+    mobileGroupID,
+    mobileAccessData,
+    isPermanentRelease,
+  ) {
+    println("Disengage /w status=$it")
+  }
 }
 ```
+
 There are several access status types upon attempting the component disengage.
+
 ```kotlin
 enum class DisengageStatusType {
-    // Component
-    ERROR,
-    AUTHORIZED,
-    AUTHORIZED_PERMANENT_ENGAGE,
-    AUTHORIZED_PERMANENT_DISENGAGE,
-    AUTHORIZED_BATTERY_LOW,
-    AUTHORIZED_OFFLINE,
-    UNAUTHORIZED,
-    UNAUTHORIZED_OFFLINE,
-    SIGNAL_LOCALIZATION,
-    MEDIUM_DEFECT_ONLINE,
-    MEDIUM_BLACKLISTED,
+  // Component
+  ERROR,
+  AUTHORIZED,
+  AUTHORIZED_PERMANENT_ENGAGE,
+  AUTHORIZED_PERMANENT_DISENGAGE,
+  AUTHORIZED_BATTERY_LOW,
+  AUTHORIZED_OFFLINE,
+  UNAUTHORIZED,
+  UNAUTHORIZED_OFFLINE,
+  SIGNAL_LOCALIZATION,
+  MEDIUM_DEFECT_ONLINE,
+  MEDIUM_BLACKLISTED,
 
-    // Interface
-    UNKNOWN_STATUS_CODE,
-    UNABLE_TO_CONNECT,
-    TIMEOUT,
+  // Interface
+  UNKNOWN_STATUS_CODE,
+  UNABLE_TO_CONNECT,
+  TIMEOUT,
 }
 ```
