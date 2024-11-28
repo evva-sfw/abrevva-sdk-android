@@ -38,7 +38,7 @@ The EVVA Abrevva Android SDK is a collection of tools to work with electronical 
 
 ```gradle
 dependencies {
-  implementation group: "com.evva.xesar", name: "abrevva-sdk-android", version: "1.0.18"
+  implementation group: "com.evva.xesar", name: "abrevva-sdk-android", version: "2.0.0"
 }
 ```
 
