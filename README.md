@@ -3,13 +3,13 @@
 </p>
 
 <p align="center">
-  <a><img src="https://img.shields.io/github/v/tag/evva-sfw/abrevva-sdk-android?color=fce500" alt="Package managers"></a>
   <a href="#quick-start"><img src="https://img.shields.io/badge/package-Gradle-fce500?logo=Gradle&logoColor=209BC4" alt="Package managers"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-EVVA_License-yellow.svg?color=fce500&logo=data:image/svg+xml;base64,PCEtLSBHZW5lcmF0ZWQgYnkgSWNvTW9vbi5pbyAtLT4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjY0MCIgaGVpZ2h0PSIxMDI0IiB2aWV3Qm94PSIwIDAgNjQwIDEwMjQiPgo8ZyBpZD0iaWNvbW9vbi1pZ25vcmUiPgo8L2c+CjxwYXRoIGZpbGw9IiNmY2U1MDAiIGQ9Ik02MjIuNDIzIDUxMS40NDhsLTMzMS43NDYtNDY0LjU1MmgtMjg4LjE1N2wzMjkuODI1IDQ2NC41NTItMzI5LjgyNSA0NjYuNjY0aDI3NS42MTJ6Ij48L3BhdGg+Cjwvc3ZnPgo=" alt="EVVA License"></a>
   <a href="https://central.sonatype.com/artifact/com.evva.xesar/abrevva-sdk-android"><img alt="Maven Central Version" src="https://img.shields.io/maven-central/v/com.evva.xesar/abrevva-sdk-android"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-EVVA_License-yellow.svg?color=fce500&logo=data:image/svg+xml;base64,PCEtLSBHZW5lcmF0ZWQgYnkgSWNvTW9vbi5pbyAtLT4KPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjY0MCIgaGVpZ2h0PSIxMDI0IiB2aWV3Qm94PSIwIDAgNjQwIDEwMjQiPgo8ZyBpZD0iaWNvbW9vbi1pZ25vcmUiPgo8L2c+CjxwYXRoIGZpbGw9IiNmY2U1MDAiIGQ9Ik02MjIuNDIzIDUxMS40NDhsLTMzMS43NDYtNDY0LjU1MmgtMjg4LjE1N2wzMjkuODI1IDQ2NC41NTItMzI5LjgyNSA0NjYuNjY0aDI3NS42MTJ6Ij48L3BhdGg+Cjwvc3ZnPgo=" alt="EVVA License"></a>
 </p>
 
-The EVVA Abrevva Android SDK is a collection of tools to work with electronical EVVA access components. It allows for scanning and connecting via BLE.
+The EVVA Abrevva Android SDK is a collection of tools to work with electronical EVVA access components. It allows for
+scanning and connecting via BLE.
 
 - [Features](#features)
 - [Requirements](#requirements)
@@ -18,15 +18,15 @@ The EVVA Abrevva Android SDK is a collection of tools to work with electronical 
 
 ## Features
 
-- BLE Scanner for EVVA components in range
-- Localize EVVA components encountered by a scan
-- Disengage EVVA components encountered by a scan
+- BLE Scanner for EVVA components
+- Localize scanned EVVA components
+- Disengage scanned EVVA components
 - Read / Write data via BLE
 
 ## Requirements
 
 | Platform                   | Installation                                                                      | Status       |
-| -------------------------- | --------------------------------------------------------------------------------- | ------------ |
+|----------------------------|-----------------------------------------------------------------------------------|--------------|
 | iOS                        | see [EVVA Abrevva IOS SDK](https://github.com/evva-sfw/abrevva-sdk-ios-pod-specs) | -            |
 | Android 10+ (API level 29) | [Gradle](#Gradle)                                                                 | Fully Tested |
 
@@ -34,11 +34,13 @@ The EVVA Abrevva Android SDK is a collection of tools to work with electronical 
 
 ### Gradle
 
-[Gradle](https://gradle.org/) is a build automation tool for multi-language software development. For usage and installation instructions, visit their website. To integrate EVVA Abrevva Android SDK into your Android Studio project using Gradle, specify the dependency in your `build.gradle` File:
+[Gradle](https://gradle.org/) is a build automation tool for multi-language software development. For usage and
+installation instructions, visit their website. To integrate EVVA Abrevva Android SDK into your Android Studio project
+using Gradle, specify the dependency in your `build.gradle` File:
 
 ```gradle
 dependencies {
-  implementation group: "com.evva.xesar", name: "abrevva-sdk-android", version: "2.0.0"
+  implementation group: "com.evva.xesar", name: "abrevva-sdk-android", version: "3.0.0"
 }
 ```
 
@@ -49,8 +51,8 @@ dependencies {
 To start off first initialize the SDK BleManager. You can pass an init callback closure for success indication.
 
 ```kotlin
+import com.evva.xesar.abrevva.ble.BleDevice
 import com.evva.xesar.abrevva.ble.BleManager
-import android.util.Log
 
 public class Example {
   private lateinit var bleManager: BleManager
@@ -64,73 +66,118 @@ public class Example {
 
 ### Scan for EVVA components
 
-Use the BleManager to scan for components in range. You can pass several callback closures to react to the different events when scanning or connecting to components.
+Use the BleManager to scan for components in range. You can pass several callback closures to react to the different
+events when scanning or connecting to components.
 
 ```kotlin
-fun requestLeScan() {
+fun scanForDevices() {
   val timeout: Long = 10_000
 
   this.bleManager.startScan(
-    { success ->
-      Log.d("BleManager", "Scan started /w success=${success}")
-    },
     { device ->
-      Log.d("BleManager", "Found device /w address=${device.device.address}")
-      this.bleDeviceMap[device.device.address] = device
+      println("Found device: address=${device.address}")
+      this.bleDeviceMap[device.address] = device
     },
-    { address ->
-      Log.d("BleManager", "Connected to device /w address=${address}")
-
+    { success ->
+      println("Scan started: success=${success}")
     },
-    { address ->
-      Log.d("BleManager", "Disconnected from device /w address=${address}")
+    { success ->
+      println("Scan stopped: success=${success}")
     },
+    null, // optional EVVA mac filter
+    null, // optional allow duplicates flag
     timeout
   )
 }
 ```
 
-### Localize EVVA component
+### Read EVVA component advertisement
 
-With the signalize method you can localize EVVA components. On a successful signalization the component will emit a melody indicating its location.
+Get the EVVA advertisement data from a scanned EVVA component.
 
 ```kotlin
-suspend fun signalize(deviceID: String) {
-  val device: BleDevice? = bleDeviceMap[deviceID]
+device.advertisementData?.let {
+  println(it.rssi)
+  println(it.isConnectable)
 
-  device?.let {
-    this.bleManager.signalize(it) { success ->
-      println("Signalized /w success=${it}")
-    }
+  it.manufacturerData?.let { md ->
+    println(md.batteryStatus)
+    println(md.isOnline)
+    println(md.officeModeEnabled)
+    println(md.officeModeActive)
+    // ...
   }
 }
 ```
 
-### Perform disengage for EVVA components
-
-For the component disengage you have to provide access credentials to the EVVA component. Those are generally acquired in the form of access media metadata from the Xesar software.
+There are several properties that can be accessed from the advertisement.
 
 ```kotlin
-suspend fun disengage(deviceID: String) {
-  val device: BleDevice? = bleDeviceMap[deviceID]
-  if (device == null) {
-    return
+data class BleDeviceAdvertisementData(
+  val rssi: Int,
+  val isConnectable: Boolean? = null,
+  val manufacturerData: BleDeviceManufacturerData? = null
+)
+
+data class BleDeviceManufacturerData(
+  val companyIdentifier: UShort,
+  val version: UByte,
+  val componentType: UByte,
+  val mainFirmwareVersionMajor: UByte,
+  val mainFirmwareVersionMinor: UByte,
+  val mainFirmwareVersionPatch: UShort,
+  val componentHAL: Int,
+  val batteryStatus: Boolean,
+  val mainConstructionMode: Boolean,
+  val subConstructionMode: Boolean,
+  val isOnline: Boolean,
+  val officeModeEnabled: Boolean,
+  val twoFactorRequired: Boolean,
+  val officeModeActive: Boolean,
+  val reservedBits: Int?,
+  val identifier: String,
+  val subFirmwareVersionMajor: UByte?,
+  val subFirmwareVersionMinor: UByte?,
+  val subFirmwareVersionPatch: UShort?,
+  val subComponentIdentifier: String?,
+)
+```
+
+### Localize EVVA components
+
+With the signalize method you can localize scanned EVVA components. On a successful signalization the component will emit a
+melody indicating its location.
+
+```kotlin
+fun signalizeDevice(device: BleDevice) {
+  this.bleManager.signalize(device) { success ->
+    println("Signalize: success=$success")
   }
-  val mobileID = ""           // hex string
-  val mobileDeviceKey = ""    // hex string
-  val mobileGroupID = ""      // hex string
-  val mobileAccessData = ""   // hex string
+}
+```
+
+### Disengage EVVA components
+
+For the component disengage you have to provide access credentials to the EVVA component. Those are generally acquired
+in the form of access media metadata from the Xesar software.
+
+```kotlin
+fun disengageDevice(device: BleDevice) {
+  val mobileId = ""           // sha256-hashed hex-encoded version of `xsMobileId` found in blob data.
+  val mobileDeviceKey = ""    // mobile device key string from `xsMOBDK` found in blob data.
+  val mobileGroupId = ""      // mobile group id string from `xsMOBGID` found in blob data.
+  val mediumAccessData = ""   // access data string from `mediumDataFrame` found in blob data.
   val isPermanentRelease = false
 
   bleManager.disengage(
-    deviceID,
-    mobileID,
+    device, // scanned EVVA component
+    mobileId,
     mobileDeviceKey,
-    mobileGroupID,
-    mobileAccessData,
+    mobileGroupId,
+    mediumAccessData,
     isPermanentRelease,
-  ) {
-    println("Disengage /w status=$it")
+  ) { status ->
+    println("Disengage: status=$status")
   }
 }
 ```
@@ -140,7 +187,6 @@ There are several access status types upon attempting the component disengage.
 ```kotlin
 enum class DisengageStatusType {
   // Component
-  ERROR,
   AUTHORIZED,
   AUTHORIZED_PERMANENT_ENGAGE,
   AUTHORIZED_PERMANENT_DISENGAGE,
@@ -151,10 +197,17 @@ enum class DisengageStatusType {
   SIGNAL_LOCALIZATION,
   MEDIUM_DEFECT_ONLINE,
   MEDIUM_BLACKLISTED,
+  ERROR,
 
   // Interface
-  UNKNOWN_STATUS_CODE,
   UNABLE_TO_CONNECT,
+  UNABLE_TO_SET_NOTIFICATIONS,
+  UNABLE_TO_READ_CHALLENGE,
+  UNABLE_TO_WRITE_MDF,
+  ACCESS_CIPHER_ERROR,
+  BLE_ADAPTER_DISABLED,
+  UNKNOWN_DEVICE,
+  UNKNOWN_STATUS_CODE,
   TIMEOUT,
 }
 ```
