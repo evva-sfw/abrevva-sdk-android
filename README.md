@@ -40,7 +40,7 @@ using Gradle, specify the dependency in your `build.gradle` File:
 
 ```gradle
 dependencies {
-  implementation group: "com.evva.xesar", name: "abrevva-sdk-android", version: "3.0.0"
+  implementation group: "com.evva.xesar", name: "abrevva-sdk-android", version: "3.2.0"
 }
 ```
 
@@ -209,5 +209,45 @@ enum class DisengageStatusType {
   UNKNOWN_DEVICE,
   UNKNOWN_STATUS_CODE,
   TIMEOUT,
+}
+```
+
+### Coding Identification Media
+
+Use the CodingStation to write or update access data onto an EVVA identification medium.
+
+```kotlin
+class MainActivity {
+  private lateinit var cs: CodingStation
+
+  suspend fun writeMedium() {
+    // Load credentials from service
+    val cf: MqttConnectionOptionsTLS
+    try {
+      cf = AuthManager.getMqttConfigForXS(
+        "url",          // host of the Xesar backend
+        "clientId",     // coding station uuid from the Xesar backend
+        "username",     // username
+        "password"      // password
+      )
+    } catch (e: Exception) {
+      println("Error getting auth credentials: $e")
+      return
+    }
+
+    val cs = CodingStation(context)
+
+    // Connect to coding station
+    cs.connect(cf)
+    // Wait for medium and start writing /w timeout
+    cs.startTagReader(this, 5000)
+    // Disconnect
+    cs.disconnect()
+  }
+
+  // Needed to pass the found intent
+  override fun onNewIntent(intent: Intent?) {
+    super.onNewIntent(intent).also { cs.onHandleIntent(intent) }
+  }
 }
 ```
