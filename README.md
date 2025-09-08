@@ -40,7 +40,7 @@ using Gradle, specify the dependency in your `build.gradle` File:
 
 ```gradle
 dependencies {
-  implementation group: "com.evva.xesar", name: "abrevva-sdk-android", version: "3.2.0"
+  implementation group: "com.evva.xesar", name: "abrevva-sdk-android", version: "3.2.3"
 }
 ```
 
