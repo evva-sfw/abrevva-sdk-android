@@ -51,9 +51,10 @@ dependencies {
 
 ## Permissions
 
-In your app's Manifest add the following install-time permissions to scan and connect to bluetooth components:
+In your app's Manifest file add any needed install-time permissions:
 
 ```xml
+<uses-permission android:name="android.permission.NFC" />
 <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
 <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
                  android:usesPermissionFlags="neverForLocation"
