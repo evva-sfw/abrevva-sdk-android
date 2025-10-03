@@ -23,24 +23,58 @@ scanning and connecting via BLE.
 - Disengage scanned EVVA components
 - Read / Write data via BLE
 
-## Requirements
-
-| Platform                   | Installation                                                                      | Status       |
-|----------------------------|-----------------------------------------------------------------------------------|--------------|
-| iOS                        | see [EVVA Abrevva IOS SDK](https://github.com/evva-sfw/abrevva-sdk-ios-pod-specs) | -            |
-| Android 10+ (API level 29) | [Gradle](#Gradle)                                                                 | Fully Tested |
-
 ## Installation
-
-### Gradle
 
 [Gradle](https://gradle.org/) is a build automation tool for multi-language software development. For usage and
 installation instructions, visit their website. To integrate EVVA Abrevva Android SDK into your Android Studio project
-using Gradle, specify the dependency in your `build.gradle` File:
+using Gradle, specify the dependency in your `build.gradle` file.
 
-```gradle
+### Kotlin 2.x
+
+**Android 11+ / API Level 30+**
+
+```groovy
+dependencies {
+  implementation group: "com.evva.xesar", name: "abrevva-sdk-android", version: "4.0.0"
+}
+```
+
+### Kotlin 1.9.x
+
+**Android 10+ / API Level 29+**
+
+```groovy
 dependencies {
   implementation group: "com.evva.xesar", name: "abrevva-sdk-android", version: "3.2.3"
+}
+```
+
+## Permissions
+
+In your app's Manifest add the following install-time permissions to scan and connect to bluetooth components:
+
+```xml
+<uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
+<uses-permission android:name="android.permission.BLUETOOTH_SCAN"
+                 android:usesPermissionFlags="neverForLocation"
+                 tools:targetApi="s"/>
+<uses-permission android:maxSdkVersion="30"
+                 android:name="android.permission.BLUETOOTH"/>
+<uses-permission android:maxSdkVersion="30"
+                 android:name="android.permission.BLUETOOTH_ADMIN"/>
+<uses-permission android:maxSdkVersion="30"
+                 android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+<uses-permission android:maxSdkVersion="30"
+                 android:name="android.permission.ACCESS_FINE_LOCATION"/>
+```
+
+## Caveats
+
+In your app-level `build.gradle` you might want to exclude META-INF files to avoid gradle build errors:
+
+```groovy
+packagingOptions {
+  resources.excludes.add("META-INF/*")
 }
 ```
 
