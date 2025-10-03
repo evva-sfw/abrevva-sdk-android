@@ -54,7 +54,7 @@ dependencies {
 In your app's Manifest file add any needed install-time permissions:
 
 ```xml
-<uses-permission android:name="android.permission.NFC" />
+<!-- Scan and connect to BLE components -->
 <uses-permission android:name="android.permission.BLUETOOTH_CONNECT"/>
 <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
                  android:usesPermissionFlags="neverForLocation"
@@ -67,16 +67,9 @@ In your app's Manifest file add any needed install-time permissions:
                  android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 <uses-permission android:maxSdkVersion="30"
                  android:name="android.permission.ACCESS_FINE_LOCATION"/>
-```
 
-## Caveats
-
-In your app-level `build.gradle` you might want to exclude META-INF files to avoid gradle build errors:
-
-```groovy
-packagingOptions {
-  resources.excludes.add("META-INF/*")
-}
+<!-- Use coding station to write media -->
+<uses-permission android:name="android.permission.NFC" />
 ```
 
 ## Examples
